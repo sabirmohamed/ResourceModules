@@ -207,31 +207,6 @@ networkAcls: {
 </details>
 <p>
 
-### Parameter Usage: `vNetId`
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"vNetId": {
-    "value": "/subscriptions/00000000/resourceGroups/resourceGroup"
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-vNetId: '/subscriptions/00000000/resourceGroups/resourceGroup'
-```
-
-</details>
-<p>
-
 ### Parameter Usage: `accessPolicies`
 
 <details>
@@ -405,7 +380,7 @@ privateEndpoints:  [
 module vaults './Microsoft.KeyVault/vaults/deploy.bicep' = {
   name: '${uniqueString(deployment().name)}-vaults'
   params: {
-  
+
   }
 ```
 
