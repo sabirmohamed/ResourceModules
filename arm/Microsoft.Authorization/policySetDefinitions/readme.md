@@ -38,66 +38,6 @@ With this module you can create policy set definitions across the management gro
 | `policyDefinitionGroups` | array | `[]` | The metadata describing groups of policy definition references within the Policy Set Definition (Initiative). |
 | `subscriptionId` | string | `''` | The subscription ID of the subscription (Scope). Cannot be used with managementGroupId. |
 
-
-### Parameter Usage: `managementGroupId`
-
-To deploy resource to a Management Group, provide the `managementGroupId` as an input parameter to the module.
-
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"managementGroupId": {
-    "value": "contoso-group"
-}
-```
-
-</details>
-
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-managementGroupId: 'contoso-group'
-```
-
-</details>
-<p>
-
-> `managementGroupId` is an optional parameter. If not provided, the deployment will use the management group defined in the current deployment scope (i.e. `managementGroup().name`).
-
-### Parameter Usage: `subscriptionId`
-
-To deploy resource to an Azure Subscription, provide the `subscriptionId` as an input parameter to the module. **Example**:
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"subscriptionId": {
-    "value": "12345678-b049-471c-95af-123456789012"
-}
-```
-
-</details>
-
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-subscriptionId: '12345678-b049-471c-95af-123456789012'
-```
-
-</details>
-<p>
-
 ## Module Usage Guidance
 
 In general, most of the resources under the `Microsoft.Authorization` namespace allows deploying resources at multiple scopes (management groups, subscriptions, resource groups). The `deploy.bicep` root module is simply an orchestrator module that targets sub-modules for different scopes as seen in the parameter usage section. All sub-modules for this namespace have folders that represent the target scope. For example, if the orchestrator module in the [root](deploy.bicep) needs to target 'subscription' level scopes. It will look at the relative path ['/subscription/deploy.bicep'](./subscription/deploy.bicep) and use this sub-module for the actual deployment, while still passing the same parameters from the root module.
