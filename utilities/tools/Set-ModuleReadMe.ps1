@@ -237,7 +237,12 @@ function Set-ParametersSection {
     $expectedParameterUsageSections = $templateFileContent.parameters.keys | Where-Object {
         $templateFileContent.parameters[$_].type -in @('object', 'array')
     }
-    $missingParameterUsageSections = Compare-Object -ReferenceObject $existingParameterUsageSections -DifferenceObject $expectedParameterUsageSections -PassThru
+
+    if ($existingParameterUsageSections) {
+        $missingParameterUsageSections = Compare-Object -ReferenceObject $existingParameterUsageSections -DifferenceObject $expectedParameterUsageSections -PassThru
+    } else {
+        $missingParameterUsageSections = $expectedParameterUsageSections
+    }
 
     if (-not $missingParameterUsageSections) {
         return $updatedFileContent
