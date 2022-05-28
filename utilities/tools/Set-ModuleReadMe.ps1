@@ -289,12 +289,12 @@ function Set-ParametersSection {
             $matchingParameter = $collectedParameters[$missingParameterUsageSection]
 
             # Create JSON parameter usage
-            $jsonElements = (@{ $missingParameterUsageSection = @{ value = $matchingParameter } } | ConvertTo-Json) -split '\n' # Create raw target object
+            $jsonElements = (@{ $missingParameterUsageSection = @{ value = $matchingParameter } } | ConvertTo-Json -Depth 99) -split '\n' # Create raw target object
             $jsonFormat = $jsonElements[1..($jsonElements.count - 2)] # Remove leading & closing brakcets
             $jsonFormat = $jsonFormat | ForEach-Object { $_.Remove(0, 2) } # Remove redundant leading spaces
 
             # Create Bicep parameter usage
-            $bicepElements = (@{ $missingParameterUsageSection = $matchingParameter } | ConvertTo-Json) -split '\n' # Create raw target object
+            $bicepElements = (@{ $missingParameterUsageSection = $matchingParameter } | ConvertTo-Json -Depth 99) -split '\n' # Create raw target object
             $bicepFormat = $bicepElements[1..($bicepElements.count - 2)] # Remove leading & closing brakcets
             $bicepFormat = $bicepFormat | ForEach-Object { $_.Remove(0, 2) } # Remove redundant leading spaces
             $bicepFormat = $bicepFormat -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
@@ -324,8 +324,6 @@ function Set-ParametersSection {
                 '</details>',
                 '<p>'
             )
-
-            $newContent = ''
         } else {
             # Or add placeholder with TODO
             $newContent = @(
