@@ -99,7 +99,7 @@ Mandatory. The template file content object to crawl data from
 .PARAMETER ReadMeFileContent
 Mandatory. The readme file content array to update
 
-.PARAMETER currentFolderPath
+.PARAMETER moduleFolderPath
 Mandatory. The current folder path
 
 .PARAMETER SectionStartIdentifier
@@ -109,9 +109,9 @@ Optional. The identifier of the 'outputs' section. Defaults to '## Parameters'
 Optional. The order of parameter categories to show in the readme parameters section.
 
 .EXAMPLE
-Set-ParametersSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+Set-ParametersSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -moduleFolderPath 'C:/ResourceModules/arm/Microsoft.KeyVault/vaults'
 
-Update the given readme file's 'Parameters' section based on the given template file content
+Update the given readme file's 'Parameters' section based on the given KeyVault's template file content
 #>
 function Set-ParametersSection {
 
@@ -124,7 +124,7 @@ function Set-ParametersSection {
         [object[]] $ReadMeFileContent,
 
         [Parameter(Mandatory)]
-        [string] $currentFolderPath,
+        [string] $moduleFolderPath,
 
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Parameters',
@@ -145,7 +145,7 @@ function Set-ParametersSection {
     $sortedParamCategories += $paramCategories | Where-Object { $ColumnsInOrder -notcontains $_ }
 
     # Collect file information
-    $currentLevelFolders = Get-ChildItem -Path $currentFolderPath -Directory -Depth 0
+    $currentLevelFolders = Get-ChildItem -Path $moduleFolderPath -Directory -Depth 0
     $folderNames = ($null -ne $currentLevelFolders) ? ($currentLevelFolders.FullName | ForEach-Object { Split-Path $_ -Leaf }) : @()
 
     # Add name as property for later reference
@@ -207,6 +207,8 @@ function Set-ParametersSection {
     }
 
     # Build sub-section 'ParameterUsage'
+
+    ## Default parameter objects/arrays
     if (Test-Path (Join-Path $PSScriptRoot 'moduleReadMeSource')) {
         if ($resourceUsageSourceFiles = Get-ChildItem (Join-Path $PSScriptRoot 'moduleReadMeSource') -Recurse -Filter 'resourceUsage-*') {
             foreach ($sourceFile in $resourceUsageSourceFiles.FullName) {
@@ -227,6 +229,140 @@ function Set-ParametersSection {
                     }
                 }
             }
+        }
+    }
+
+    ## Unique parameter objects/arrays
+    $existingParameterUsageSections = $updatedFileContent | Select-String -Pattern '### Parameter Usage: `(.+)`' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
+    $expectedParameterUsageSections = $templateFileContent.parameters.keys | Where-Object {
+        $templateFileContent.parameters[$_].type -in @('object', 'array')
+    }
+    $missingParameterUsageSections = Compare-Object -ReferenceObject $existingParameterUsageSections -DifferenceObject $expectedParameterUsageSections -PassThru
+
+    if (-not $missingParameterUsageSections) {
+        return $updatedFileContent
+    }
+
+    # Collect all parameters of parameter files (and compile them if necessary)
+    $parameterFilePaths = Get-ChildItem -Path $moduleFolderPath -Recurse -Filter '*.parameters.*' -File -Depth 1
+    $collectedParameters = @{}
+    foreach ($parameterFilePath in $parameterFilePaths) {
+
+        # Get the parameters
+        if ($parameterFilePath -like '*.bicep') {
+            $parameterFileParameters = (az bicep build --file $parameterFilePath --stdout | ConvertFrom-Json -AsHashtable).parameters
+        } elseif ($parameterFilePath -like '*.json') {
+            $rawJSONParameters = (Get-Content $parameterFilePath | ConvertFrom-Json -AsHashtable).parameters
+
+            # Remove 'value' ref that exist only in JSON Parameter Files
+            $parameterFileParameters = @{}
+            foreach ($parameter in $rawJSONParameters.Keys) {
+                if ($rawJSONParameters[$parameter].Keys -contains 'value') {
+                    $parameterFileParameters[$parameter] = $rawJSONParameters[$parameter].value
+                } else {
+                    $parameterFileParameters[$parameter] = $rawJSONParameters[$parameter]
+                }
+            }
+        } else {
+            throw "Invalid parameter file found at [$parameterFilePath]"
+        }
+
+        # Collect the most detailed parameters
+        foreach ($parameter in $parameterFileParameters.Keys) {
+            if ($collectedParameters -contains $parameter) {
+                # We want the use the 'longest' example as it ideally corresponds to the most detail
+                if (($collectedParameters[$parameter] | ConvertTo-Json).length -lt ($parameterFileParameters[$parameter] | ConvertTo-Json).length) {
+                    $collectedParameters[$parameter] = $parameterFileParameters[$parameter]
+                }
+            } else {
+                $collectedParameters[$parameter] = $parameterFileParameters[$parameter]
+            }
+        }
+    }
+
+    foreach ($missingParameterUsageSection in $missingParameterUsageSections) {
+        $subSectionStartIdentifier = '### Parameter Usage: `{0}`' -f $missingParameterUsageSection
+
+        if ($collectedParameters.Keys -contains $missingParameterUsageSection) {
+            # Try to fetch an example from the parameter file(s) (Bicep/JSON)
+
+            $matchingParameter = $collectedParameters[$missingParameterUsageSection]
+
+            # Create JSON parameter usage
+            $jsonElements = (@{ $missingParameterUsageSection = @{ value = $matchingParameter } } | ConvertTo-Json) -split '\n' # Create raw target object
+            $jsonFormat = $jsonElements[1..($jsonElements.count - 2)] # Remove leading & closing brakcets
+            $jsonFormat = $jsonFormat | ForEach-Object { $_.Remove(0, 2) } # Remove redundant leading spaces
+
+            # Create Bicep parameter usage
+            $bicepElements = (@{ $missingParameterUsageSection = $matchingParameter } | ConvertTo-Json) -split '\n' # Create raw target object
+            $bicepFormat = $bicepElements[1..($bicepElements.count - 2)] # Remove leading & closing brakcets
+            $bicepFormat = $bicepFormat | ForEach-Object { $_.Remove(0, 2) } # Remove redundant leading spaces
+            $bicepFormat = $bicepFormat -replace '"', "'" # Update any [xyz: "xyz"] to [xyz: 'xyz']
+            $bicepFormat = $bicepFormat -replace ',', '' # Update any [xyz: xyz,] to [xyz: xyz]
+            $bicepFormat = $bicepFormat -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
+
+            $newContent = @(
+                '',
+                '<details>',
+                '',
+                '<summary>Parameter JSON format</summary>',
+                '',
+                '```json',
+                $jsonFormat
+                '```',
+                '',
+                '</details>',
+                '',
+                '<details>',
+                ''
+                '<summary>Bicep format</summary>',
+                '',
+                '```bicep',
+                $bicepFormat
+                '```',
+                '',
+                '</details>',
+                '<p>'
+            )
+
+            $newContent = ''
+        } else {
+            # Or add placeholder with TODO
+            $newContent = @(
+                '',
+                '// TODO: Fill in Parameter usage',
+                '',
+                '<details>',
+                '',
+                '<summary>Parameter JSON format</summary>',
+                '',
+                '```json',
+                '```',
+                '',
+                '</details>',
+                '',
+                '<details>',
+                ''
+                '<summary>Bicep format</summary>',
+                '',
+                '```bicep',
+                '```',
+                '',
+                '</details>',
+                '<p>'
+            )
+        }
+
+        # Build result
+        $updateParameterUsageInputObject = @{
+            OldContent             = $updatedFileContent
+            NewContent             = $newContent
+            SectionStartIdentifier = $subSectionStartIdentifier
+            ParentStartIdentifier  = $SectionStartIdentifier
+            ContentType            = 'none'
+        }
+        if ($PSCmdlet.ShouldProcess(('Original file with new parameter usage [{0}] content' -f $parameterName), 'Merge')) {
+            $updatedFileContent = Merge-FileWithNewContent @updateParameterUsageInputObject
         }
     }
 
@@ -446,20 +582,20 @@ function Set-DeploymentExamplesSection {
 
             $SectionContent += @(
                 '',
-                '<details>'
-                ''
-                '<summary>via Bicep module</summary>'
-                ''
+                '<details>',
+                '',
+                '<summary>via Bicep module</summary>',
+                '',
                 '```bicep',
                 $extendedKeyVaultReferences,
-                "module $resourceType './$resourceTypeIdentifier/deploy.bicep' = {"
-                "  name: '`${uniqueString(deployment().name)}-$resourceType'"
-                '  params: {'
+                "module $resourceType './$resourceTypeIdentifier/deploy.bicep' = {",
+                "  name: '`${uniqueString(deployment().name)}-$resourceType'",
+                '  params: {',
                 ($bicepParamsArray | ForEach-Object { "  $_" }),
-                '  }'
+                '  }',
                 '```',
                 '',
-                '</details>'
+                '</details>',
                 '<p>'
             )
         }
@@ -703,7 +839,7 @@ function Set-ModuleReadMe {
         $inputObject = @{
             ReadMeFileContent   = $readMeFileContent
             TemplateFileContent = $templateFileContent
-            currentFolderPath   = (Split-Path $TemplateFilePath -Parent)
+            moduleFolderPath    = (Split-Path $TemplateFilePath -Parent)
         }
         $readMeFileContent = Set-ParametersSection @inputObject
     }
