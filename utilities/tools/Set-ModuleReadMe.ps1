@@ -232,13 +232,19 @@ function Set-ParametersSection {
         }
     }
 
-    ## Unique parameter objects/arrays
+    ## Unique parameter objects/arrays (for now only for top-level modules)
+    ### To also handle children, the auto-population that searches in parameter files has to search in the parent-child hierarchy of the parameter file accordingly
+    $isTopLevelModule = $moduleFolderPath.Replace('\', '/').Split('/arm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
+    if (-not $isTopLevelModule) {
+        return $updatedFileContent
+    }
+
     $existingParameterUsageSections = $updatedFileContent | Select-String -Pattern '### Parameter Usage: `(.+)`' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
     $expectedParameterUsageSections = $templateFileContent.parameters.keys | Where-Object {
         $templateFileContent.parameters[$_].type -in @('object', 'array')
     }
 
-    if ($existingParameterUsageSections -and $existingParameterUsageSections) {
+    if ($existingParameterUsageSections -and $expectedParameterUsageSections) {
         $missingParameterUsageSections = Compare-Object -ReferenceObject $existingParameterUsageSections -DifferenceObject $expectedParameterUsageSections -PassThru
     } else {
         $missingParameterUsageSections = $expectedParameterUsageSections
