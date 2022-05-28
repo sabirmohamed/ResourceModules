@@ -238,7 +238,7 @@ function Set-ParametersSection {
         $templateFileContent.parameters[$_].type -in @('object', 'array')
     }
 
-    if ($existingParameterUsageSections) {
+    if ($existingParameterUsageSections -and $existingParameterUsageSections) {
         $missingParameterUsageSections = Compare-Object -ReferenceObject $existingParameterUsageSections -DifferenceObject $expectedParameterUsageSections -PassThru
     } else {
         $missingParameterUsageSections = $expectedParameterUsageSections
