@@ -367,7 +367,7 @@ userAssignedIdentities: {
                     "name": "public443",
                     "properties": {
                         "frontendIPConfiguration": {
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_public"
                         },
                         "frontendPort": {
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port443"
@@ -384,7 +384,7 @@ userAssignedIdentities: {
                     "name": "private4433",
                     "properties": {
                         "frontendIPConfiguration": {
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/private"
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_private"
                         },
                         "frontendPort": {
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port4433"
@@ -401,7 +401,7 @@ userAssignedIdentities: {
                     "name": "httpRedirect80",
                     "properties": {
                         "frontendIPConfiguration": {
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_public"
                         },
                         "frontendPort": {
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port80"
@@ -415,7 +415,7 @@ userAssignedIdentities: {
                     "name": "httpRedirect8080",
                     "properties": {
                         "frontendIPConfiguration": {
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/private"
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_private"
                         },
                         "frontendPort": {
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port8080"
@@ -723,7 +723,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         name: 'public443'
         properties: {
           frontendIPConfiguration: {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_public'
           }
           frontendPort: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port443'
@@ -740,7 +740,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         name: 'private4433'
         properties: {
           frontendIPConfiguration: {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/private'
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_private'
           }
           frontendPort: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port4433'
@@ -757,7 +757,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         name: 'httpRedirect80'
         properties: {
           frontendIPConfiguration: {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_public'
           }
           frontendPort: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port80'
@@ -771,7 +771,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         name: 'httpRedirect8080'
         properties: {
           frontendIPConfiguration: {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/private'
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/frontend_private'
           }
           frontendPort: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendPorts/port8080'
