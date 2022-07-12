@@ -313,7 +313,7 @@ userAssignedIdentities: {
         "frontendIPConfigurations": {
             "value": [
                 {
-                    "name": "private",
+                    "name": "frontend_private",
                     "properties": {
                         "privateIPAddress": "10.0.8.6",
                         "privateIPAllocationMethod": "Static",
@@ -323,7 +323,7 @@ userAssignedIdentities: {
                     }
                 },
                 {
-                    "name": "public",
+                    "name": "frontend_public",
                     "properties": {
                         "privateIPAllocationMethod": "Dynamic",
                         "publicIPAddress": {
@@ -673,7 +673,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     ]
     frontendIPConfigurations: [
       {
-        name: 'private'
+        name: 'frontend_private'
         properties: {
           privateIPAddress: '10.0.8.6'
           privateIPAllocationMethod: 'Static'
@@ -683,7 +683,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         }
       }
       {
-        name: 'public'
+        name: 'frontend_public'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
