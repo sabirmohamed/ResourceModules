@@ -558,6 +558,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           httpListener: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/public443'
           }
+          priority: 200
           ruleType: 'Basic'
         }
       }
@@ -573,6 +574,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           httpListener: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/private4433'
           }
+          priority: 250
           ruleType: 'Basic'
         }
       }
@@ -582,6 +584,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           httpListener: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/httpRedirect80'
           }
+          priority: 300
           redirectConfiguration: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/redirectConfigurations/httpRedirect80'
           }
@@ -594,6 +597,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           httpListener: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/httpRedirect8080'
           }
+          priority: 350
           redirectConfiguration: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/redirectConfigurations/httpRedirect8080'
           }
@@ -926,6 +930,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
             "httpListener": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/public443"
             },
+            "priority": 200,
             "ruleType": "Basic"
           }
         },
@@ -941,6 +946,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
             "httpListener": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/private4433"
             },
+            "priority": 250,
             "ruleType": "Basic"
           }
         },
@@ -950,6 +956,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
             "httpListener": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/httpRedirect80"
             },
+            "priority": 300,
             "redirectConfiguration": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/redirectConfigurations/httpRedirect80"
             },
@@ -962,6 +969,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
             "httpListener": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/httpListeners/httpRedirect8080"
             },
+            "priority": 350,
             "redirectConfiguration": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/redirectConfigurations/httpRedirect8080"
             },
