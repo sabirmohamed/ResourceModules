@@ -345,25 +345,21 @@
         "privateLinkServices": {
             "value": [
                 {
-                    "ipConfigurations": {
-                        "value": [
-                            {
-                                "name": "appgwpublicpls01",
-                                "properties": {
-                                    "subnet": {
-                                        "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
-                                    }
+                    "ipConfigurations": [
+                        {
+                            "name": "appgwpublicpls01",
+                            "properties": {
+                                "subnet": {
+                                    "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
                                 }
                             }
-                        ]
-                    },
-                    "loadBalancerFrontendIpConfigurations": {
-                        "value": [
-                            {
-                                "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
-                            }
-                        ]
-                    }
+                        }
+                    ],
+                    "loadBalancerFrontendIpConfigurations": [
+                        {
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+                        }
+                    ]
                 }
             ]
         },
