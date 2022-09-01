@@ -233,6 +233,9 @@ param tags object = {}
 @description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
 param enableDefaultTelemetry bool = true
 
+@description('Optional. Configuration details for the Private Link Service. This is a prerequisite for Private Endpoints.')
+param privateLinkServices array = []
+
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints array = []
 
@@ -357,6 +360,25 @@ module applicationGateway_roleAssignments '.bicep/nested_roleAssignments.bicep' 
     condition: contains(roleAssignment, 'condition') ? roleAssignment.condition : ''
     delegatedManagedIdentityResourceId: contains(roleAssignment, 'delegatedManagedIdentityResourceId') ? roleAssignment.delegatedManagedIdentityResourceId : ''
     resourceId: applicationGateway.id
+  }
+}]
+
+module applicationGateway_privateLinkService '../../Microsoft.Network/privateLinkServices/deploy.bicep' = [for (privateLinkService, index) in privateLinkServices: {
+  name: '${uniqueString(deployment().name, location)}-AppGateway-PrivateLinkService-${index}'
+  params: {
+    name: contains(privateLinkService, 'name') ? privateLinkService.name : 'pls-${last(split(applicationGateway.id, '/'))}-${index}'
+    location: location
+    lock: contains(privateLinkService, 'lock') ? privateLinkService.lock : lock
+    tags: contains(privateLinkService, 'tags') ? privateLinkService.tags : {}
+    extendedLocation: contains(privateLinkService, 'extendedLocation') ? privateLinkService.extendedLocation : {}
+    autoApproval: contains(privateLinkService, 'autoApproval') ? privateLinkService.name : {}
+    enableProxyProtocol: contains(privateLinkService, 'enableProxyProtocol') ? privateLinkService.enableProxyProtocol : false
+    fqdns: contains(privateLinkService, 'fqdns') ? privateLinkService.fqdns : []
+    ipConfigurations: privateLinkService.ipConfigurations
+    loadBalancerFrontendIpConfigurations: privateLinkService.loadBalancerFrontendIpConfigurations
+    visibility: contains(privateLinkService, 'visibility') ? privateLinkService.visibility : {}
+    enableDefaultTelemetry: enableDefaultTelemetry
+    roleAssignments: contains(privateLinkService, 'roleAssignments') ? privateLinkService.roleAssignments : []
   }
 }]
 
