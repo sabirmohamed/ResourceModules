@@ -347,7 +347,7 @@
                 {
                     "ipConfigurations": [
                         {
-                            "name": "appgwpublicpls01",
+                            "name": "appGwPublicPls01",
                             "properties": {
                                 "subnet": {
                                     "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
