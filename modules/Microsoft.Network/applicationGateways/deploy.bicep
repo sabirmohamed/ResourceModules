@@ -361,7 +361,7 @@ module applicationGateway_roleAssignments '.bicep/nested_roleAssignments.bicep' 
 }]
 
 module applicationGateway_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
-  name: '${uniqueString(deployment().name, location)}-AppGateway-PrivateEndpoint-${index}'
+  name: '${uniqueString(deployment().name, location)}-AppGw-PrivateEndpoint-${index}'
   params: {
     groupIds: [
       privateEndpoint.service
