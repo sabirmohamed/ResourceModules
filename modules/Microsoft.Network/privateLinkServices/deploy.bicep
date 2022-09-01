@@ -54,19 +54,11 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-<<<<<<< HEAD
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2021-08-01' = {
-  name: name
-  location: location
-  tags: tags
-  extendedLocation: extendedLocation
-=======
 resource privateLinkService 'Microsoft.Network/privateLinkServices@2022-01-01' = {
   name: name
   location: location
   tags: tags
   extendedLocation: !empty(extendedLocation) ? extendedLocation : null
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
   properties: {
     autoApproval: autoApproval
     enableProxyProtocol: enableProxyProtocol
@@ -77,11 +69,7 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2022-01-01' =
   }
 }
 
-<<<<<<< HEAD
-resource privateLinkService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
-=======
 resource privateLinkService_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
   name: '${privateLinkService.name}-${lock}-lock'
   properties: {
     level: any(lock)
@@ -97,11 +85,8 @@ module privateLinkService_roleAssignments '.bicep/nested_roleAssignments.bicep' 
     principalIds: roleAssignment.principalIds
     principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-<<<<<<< HEAD
-=======
     condition: contains(roleAssignment, 'condition') ? roleAssignment.condition : ''
     delegatedManagedIdentityResourceId: contains(roleAssignment, 'delegatedManagedIdentityResourceId') ? roleAssignment.delegatedManagedIdentityResourceId : ''
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
     resourceId: privateLinkService.id
   }
 }]

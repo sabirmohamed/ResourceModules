@@ -3,11 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "name": {
-<<<<<<< HEAD
-            "value": "<<namePrefix>>-az-pls-appgw-001"
-=======
             "value": "<<namePrefix>>-az-pls-001"
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
         },
         "lock": {
             "value": "CanNotDelete"
@@ -20,11 +16,7 @@
                         "primary": true,
                         "privateIPAllocationMethod": "Dynamic",
                         "subnet": {
-<<<<<<< HEAD
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints"
-=======
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
                         }
                     }
                 }
@@ -33,9 +25,6 @@
         "loadBalancerFrontendIpConfigurations": {
             "value": [
                 {
-<<<<<<< HEAD
-                    "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-internal-001/frontendIPConfigurations/privateIPConfig1"
-=======
                     "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-pls-001/frontendIPConfigurations/frontend-pls"
                 }
             ]
@@ -70,7 +59,6 @@
                     "principalIds": [
                         "<<deploymentSpId>>"
                     ]
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
                 }
             ]
         }

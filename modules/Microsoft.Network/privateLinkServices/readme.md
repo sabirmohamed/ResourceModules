@@ -1,24 +1,5 @@
 # Network PrivateLinkServices `[Microsoft.Network/privateLinkServices]`
 
-<<<<<<< HEAD
-This module deploys Network PrivateLinkServices.
-// TODO: Replace Resource and fill in description
-
-## Navigation
-
-- [Resource Types](#Resource-Types)
-- [Parameters](#Parameters)
-- [Outputs](#Outputs)
-- [Deployment examples](#Deployment-examples)
-
-## Resource Types
-
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2020-10-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-10-01-preview/roleAssignments) |
-| `Microsoft.Network/privateLinkServices` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/privateLinkServices) |
-=======
 This module deploys Network Private Link Services.
 
 ## Navigation
@@ -36,7 +17,6 @@ This module deploys Network Private Link Services.
 | `Microsoft.Authorization/locks` | [2017-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2017-04-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateLinkServices` | [2022-01-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-01-01/privateLinkServices) |
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
 
 ## Parameters
 
@@ -61,12 +41,6 @@ This module deploys Network Private Link Services.
 | `tags` | object | `{object}` |  | Tags to be applied on all resources/resource groups in this deployment. |
 | `visibility` | object | `{object}` |  | The visibility list of the private link service. |
 
-
-<<<<<<< HEAD
-### Parameter Usage: `<ParameterPlaceholder>`
-
-// TODO: Fill in Parameter usage
-=======
 ### Parameter Usage: `ipConfigurations`
 
 This property refers to the NAT (Network Address Translation) IP configuration for the Private Link service. The NAT IP can be chosen from any subnet in a service provider's virtual network. Private Link service performs destination side NAT-ing on the Private Link traffic. This ensures that there is no IP conflict between source (consumer side) and destination (service provider) address space. On the destination side (service provider side), the NAT IP address will show up as Source IP for all packets received by your service and destination IP for all packets sent by your service.
@@ -335,7 +309,6 @@ fqdns: [
 
 </details>
 <p>
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
 
 ### Parameter Usage: `roleAssignments`
 
@@ -446,24 +419,17 @@ tags: {
 | `resourceGroupName` | string | The resource group the private link service was deployed into. |
 | `resourceId` | string | The resource ID of the private link service. |
 
-<<<<<<< HEAD
-=======
 ## Cross-referenced modules
 
 _None_
 
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
 ## Deployment examples
 
 The following module usage examples are retrieved from the content of the files hosted in the module's `.test` folder.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-<<<<<<< HEAD
-<h3>Example 1: Parameters</h3>
-=======
 <h3>Example 1: Min</h3>
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
 
 <details>
 
@@ -471,21 +437,6 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module privateLinkServices './Microsoft.Network/privateLinkServices/deploy.bicep' = {
-<<<<<<< HEAD
-  name: '${uniqueString(deployment().name)}-privateLinkServices'
-  params: {
-    // Required parameters
-    name: '<<namePrefix>>-az-pls-appgw-001'
-    // Non-required parameters
-    ipConfigurations: [
-      {
-        name: 'pls01'
-        properties: {
-          primary: true
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-=======
   name: '${uniqueString(deployment().name)}-PrivateLinkServices'
   params: {
     // Required parameters
@@ -497,23 +448,15 @@ module privateLinkServices './Microsoft.Network/privateLinkServices/deploy.bicep
         properties: {
           subnet: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009'
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
           }
         }
       }
     ]
     loadBalancerFrontendIpConfigurations: [
       {
-<<<<<<< HEAD
-        id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-internal-001/frontendIPConfigurations/privateIPConfig1'
-      }
-    ]
-    lock: 'CanNotDelete'
-=======
         id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-pls-001/frontendIPConfigurations/frontend-pls-min'
       }
     ]
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
   }
 }
 ```
@@ -532,29 +475,16 @@ module privateLinkServices './Microsoft.Network/privateLinkServices/deploy.bicep
   "parameters": {
     // Required parameters
     "name": {
-<<<<<<< HEAD
-      "value": "<<namePrefix>>-az-pls-appgw-001"
-=======
       "value": "<<namePrefix>>-az-pls-min-001"
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
     },
     // Non-required parameters
     "ipConfigurations": {
       "value": [
         {
-<<<<<<< HEAD
-          "name": "pls01",
-          "properties": {
-            "primary": true,
-            "privateIPAllocationMethod": "Dynamic",
-            "subnet": {
-              "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints"
-=======
           "name": "minpls01",
           "properties": {
             "subnet": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
             }
           }
         }
@@ -563,14 +493,6 @@ module privateLinkServices './Microsoft.Network/privateLinkServices/deploy.bicep
     "loadBalancerFrontendIpConfigurations": {
       "value": [
         {
-<<<<<<< HEAD
-          "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-internal-001/frontendIPConfigurations/privateIPConfig1"
-        }
-      ]
-    },
-    "lock": {
-      "value": "CanNotDelete"
-=======
           "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/loadBalancers/adp-<<namePrefix>>-az-lb-pls-001/frontendIPConfigurations/frontend-pls-min"
         }
       ]
@@ -713,7 +635,6 @@ module privateLinkServices './Microsoft.Network/privateLinkServices/deploy.bicep
           "<<subscriptionId>>"
         ]
       }
->>>>>>> b3e9f272e4d47557bc22f8d754c7f3848d4000e9
     }
   }
 }
