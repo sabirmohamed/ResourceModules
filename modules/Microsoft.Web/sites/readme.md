@@ -190,9 +190,11 @@ To use Private Endpoint the following dependencies must be deployed:
             "name": "sxx-az-pe", // Optional: Name will be automatically generated if one is not provided here
             "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/sxx-az-vnet-x-001/subnets/sxx-az-subnet-x-001",
             "service": "<<serviceName>>", // e.g. vault, registry, file, blob, queue, table etc.
-            "privateDnsZoneResourceIds": [ // Optional: No DNS record will be created if a private DNS zone Resource ID is not specified
-                "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
-            ],
+            "privateDnsZoneGroup": {
+                "privateDNSResourceIds": [ // Optional: No DNS record will be created if a private DNS zone Resource ID is not specified
+                    "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+                ]
+            },
             "customDnsConfigs": [ // Optional
                 {
                     "fqdn": "customname.test.local",
@@ -224,9 +226,11 @@ privateEndpoints:  [
         name: 'sxx-az-pe' // Optional: Name will be automatically generated if one is not provided here
         subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/sxx-az-vnet-x-001/subnets/sxx-az-subnet-x-001'
         service: '<<serviceName>>' // e.g. vault registry file blob queue table etc.
-        privateDnsZoneResourceIds: [ // Optional: No DNS record will be created if a private DNS zone Resource ID is not specified
-            '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net'
-        ]
+        privateDnsZoneGroups: {
+            privateDNSResourceIds: [ // Optional: No DNS record will be created if a private DNS zone Resource ID is not specified
+                '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net'
+            ]
+        }
         // Optional
         customDnsConfigs: [
             {
@@ -385,6 +389,7 @@ userAssignedIdentities: {
 
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
+| `defaultHostname` | string | Default hostname of the app. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
 | `resourceGroupName` | string | The resource group the site was deployed into. |
@@ -413,7 +418,7 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module sites './Microsoft.Web/sites/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-sites'
+  name: '${uniqueString(deployment().name)}-Sites'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -470,7 +475,7 @@ module sites './Microsoft.Web/sites/deploy.bicep' = {
 
 ```bicep
 module sites './Microsoft.Web/sites/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-sites'
+  name: '${uniqueString(deployment().name)}-Sites'
   params: {
     // Required parameters
     kind: 'functionapp'
@@ -749,7 +754,7 @@ module sites './Microsoft.Web/sites/deploy.bicep' = {
 
 ```bicep
 module sites './Microsoft.Web/sites/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-sites'
+  name: '${uniqueString(deployment().name)}-Sites'
   params: {
     // Required parameters
     kind: 'app'
@@ -796,7 +801,7 @@ module sites './Microsoft.Web/sites/deploy.bicep' = {
 
 ```bicep
 module sites './Microsoft.Web/sites/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-sites'
+  name: '${uniqueString(deployment().name)}-Sites'
   params: {
     // Required parameters
     kind: 'app'

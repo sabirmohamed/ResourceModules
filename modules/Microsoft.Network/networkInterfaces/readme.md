@@ -196,7 +196,7 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module networkInterfaces './Microsoft.Network/networkInterfaces/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-networkInterfaces'
+  name: '${uniqueString(deployment().name)}-NetworkInterfaces'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -249,7 +249,7 @@ module networkInterfaces './Microsoft.Network/networkInterfaces/deploy.bicep' = 
 
 ```bicep
 module networkInterfaces './Microsoft.Network/networkInterfaces/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-networkInterfaces'
+  name: '${uniqueString(deployment().name)}-NetworkInterfaces'
   params: {
     // Required parameters
     ipConfigurations: [
@@ -265,6 +265,14 @@ module networkInterfaces './Microsoft.Network/networkInterfaces/deploy.bicep' = 
           }
         ]
         name: 'ipconfig01'
+        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001'
+      }
+      {
+        applicationSecurityGroups: [
+          {
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationSecurityGroups/adp-<<namePrefix>>-az-asg-x-001'
+          }
+        ]
         subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001'
       }
     ]
@@ -315,6 +323,14 @@ module networkInterfaces './Microsoft.Network/networkInterfaces/deploy.bicep' = 
             }
           ],
           "name": "ipconfig01",
+          "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001"
+        },
+        {
+          "applicationSecurityGroups": [
+            {
+              "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationSecurityGroups/adp-<<namePrefix>>-az-asg-x-001"
+            }
+          ],
           "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001"
         }
       ]
