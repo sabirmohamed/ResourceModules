@@ -529,7 +529,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
                 primary: false
                 privateIPAllocationMethod: 'Dynamic'
                 subnet: {
-                  id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001'
+                  id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009'
                 }
               }
             }
@@ -929,7 +929,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
                   "primary": false,
                   "privateIPAllocationMethod": "Dynamic",
                   "subnet": {
-                    "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-001"
+                    "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
                   }
                 }
               }
