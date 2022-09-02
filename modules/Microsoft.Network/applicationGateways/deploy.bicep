@@ -400,6 +400,9 @@ module applicationGateway_privateEndpoints '../../Microsoft.Network/privateEndpo
     manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
     customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
   }
+  dependsOn: [
+    applicationGateway_privateLinkService
+  ]
 }]
 
 @description('The name of the application gateway.')
