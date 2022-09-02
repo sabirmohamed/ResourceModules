@@ -360,26 +360,6 @@ module applicationGateway_roleAssignments '.bicep/nested_roleAssignments.bicep' 
   }
 }]
 
-module applicationGateway_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
-  name: '${uniqueString(deployment().name, location)}-AppGateway-PrivateEndpoint-${index}'
-  params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
-    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(applicationGateway.id, '/'))}-${privateEndpoint.service}-${index}'
-    serviceResourceId: applicationGateway.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
-    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
-    privateDnsZoneGroup: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : {}
-    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
-    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
-    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
-    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
-  }
-}]
-
 @description('The name of the application gateway.')
 output name string = applicationGateway.name
 

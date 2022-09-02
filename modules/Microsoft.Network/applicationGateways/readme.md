@@ -18,8 +18,6 @@ This module deploys Network ApplicationGateways.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/applicationGateways` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/applicationGateways) |
-| `Microsoft.Network/privateEndpoints` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Parameters
 
@@ -307,11 +305,7 @@ privateEndpoints:  [
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `Microsoft.Network/privateEndpoints` | Local reference |
+_None_
 
 ## Deployment examples
 
@@ -507,12 +501,6 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
       }
     ]
     lock: 'CanNotDelete'
-    privateEndpoints: [
-      {
-        service: 'public'
-        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-      }
-    ]
     privateLinkConfigurations: [
       {
         name: 'publicFrontend-PrivateLinkConfiguration'
@@ -903,14 +891,6 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     },
     "lock": {
       "value": "CanNotDelete"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "service": "public",
-          "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints"
-        }
-      ]
     },
     "privateLinkConfigurations": {
       "value": [
