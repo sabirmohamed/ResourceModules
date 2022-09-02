@@ -359,9 +359,11 @@
                                 }
                             }
                         ],
-                        "frontendIpConfigurations": {
-                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
-                        }
+                        "frontendIpConfigurations": [
+                            {
+                                "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+                            }
+                        ]
                     }
                 }
             ]
