@@ -394,6 +394,9 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         name: 'public'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
+          privateLinkConfiguration: {
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/privateLinkConfigurations/publicFrontend-PrivateLinkConfiguration'
+          }
           publicIPAddress: {
             id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/publicIPAddresses/adp-<<namePrefix>>-az-pip-x-apgw'
           }
@@ -771,6 +774,9 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           "name": "public",
           "properties": {
             "privateIPAllocationMethod": "Dynamic",
+            "privateLinkConfiguration": {
+              "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/privateLinkConfigurations/publicFrontend-PrivateLinkConfiguration"
+            },
             "publicIPAddress": {
               "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/publicIPAddresses/adp-<<namePrefix>>-az-pip-x-apgw"
             }

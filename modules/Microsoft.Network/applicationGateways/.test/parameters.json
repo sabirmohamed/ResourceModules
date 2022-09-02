@@ -97,6 +97,9 @@
                         "privateIPAllocationMethod": "Dynamic",
                         "publicIPAddress": {
                             "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/publicIPAddresses/adp-<<namePrefix>>-az-pip-x-apgw"
+                        },
+                        "privateLinkConfiguration": {
+                            "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/privateLinkConfigurations/publicFrontend-PrivateLinkConfiguration"
                         }
                     }
                 }
