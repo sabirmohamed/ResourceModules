@@ -530,7 +530,9 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         ]
         loadBalancerFrontendIpConfigurations: [
           {
-            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
+            gatewayLoadBalancer: {
+              id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
+            }
           }
         ]
       }
@@ -925,7 +927,9 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
           ],
           "loadBalancerFrontendIpConfigurations": [
             {
-              "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+              "gatewayLoadBalancer": {
+                "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+              }
             }
           ]
         }
