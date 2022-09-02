@@ -20,6 +20,7 @@ This module deploys Network ApplicationGateways.
 | `Microsoft.Network/applicationGateways` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/applicationGateways) |
 | `Microsoft.Network/privateEndpoints` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateLinkServices` | [2022-01-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-01-01/privateLinkServices) |
 
 ## Parameters
 
@@ -61,6 +62,7 @@ This module deploys Network ApplicationGateways.
 | `lock` | string | `''` | `['', CanNotDelete, ReadOnly]` | Specify the type of lock. |
 | `privateEndpoints` | array | `[]` |  | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | `privateLinkConfigurations` | array | `[]` |  | PrivateLink configurations on application gateway. |
+| `privateLinkServices` | array | `[]` |  | Configuration details for the Private Link Service. This is a prerequisite for Private Endpoints. |
 | `probes` | array | `[]` |  | Probes of the application gateway resource. |
 | `redirectConfigurations` | array | `[]` |  | Redirect configurations of the application gateway resource. |
 | `requestRoutingRules` | array | `[]` |  | Request routing rules of the application gateway resource. |
@@ -312,6 +314,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `Microsoft.Network/privateEndpoints` | Local reference |
+| `Microsoft.Network/privateLinkServices` | Local reference |
 
 ## Deployment examples
 
@@ -509,12 +512,27 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     lock: 'CanNotDelete'
     privateEndpoints: [
       {
-        service: 'private'
-        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-      }
-      {
         service: 'public'
         subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
+      }
+    ]
+    privateLinkServices: [
+      {
+        ipConfigurations: [
+          {
+            name: 'appGwPublicPLS01'
+            properties: {
+              subnet: {
+                id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009'
+              }
+            }
+          }
+        ]
+        loadBalancerFrontendIpConfigurations: [
+          {
+            id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
+          }
+        ]
       }
     ]
     probes: [
@@ -887,12 +905,29 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     "privateEndpoints": {
       "value": [
         {
-          "service": "private",
-          "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints"
-        },
-        {
           "service": "public",
           "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints"
+        }
+      ]
+    },
+    "privateLinkServices": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "appGwPublicPLS01",
+              "properties": {
+                "subnet": {
+                  "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-009"
+                }
+              }
+            }
+          ],
+          "loadBalancerFrontendIpConfigurations": [
+            {
+              "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
+            }
+          ]
         }
       ]
     },
