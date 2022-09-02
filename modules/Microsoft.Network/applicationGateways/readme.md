@@ -505,11 +505,6 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
       {
         name: 'publicFrontend-PrivateLinkConfiguration'
         properties: {
-          frontendIpConfigurations: [
-            {
-              id: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public'
-            }
-          ]
           ipConfigurations: [
             {
               name: 'publicFrontend-privateLinkIpConfig1'
@@ -897,11 +892,6 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
         {
           "name": "publicFrontend-PrivateLinkConfiguration",
           "properties": {
-            "frontendIpConfigurations": [
-              {
-                "id": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/applicationGateways/<<namePrefix>>-az-apgw-x-001/frontendIPConfigurations/public"
-              }
-            ],
             "ipConfigurations": [
               {
                 "name": "publicFrontend-privateLinkIpConfig1",
