@@ -52,7 +52,7 @@
 | `gitRepositoryName` | string | `''` |  | The repository name. |
 | `gitRepoType` | string | `'FactoryVSTSConfiguration'` |  | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
 | `gitRootFolder` | string | `'/'` |  | The root folder path name. Default is '/'. |
-| `integrationRuntime` | _[integrationRuntime](integrationRuntime/readme.md)_ object | `{object}` |  | The object for the configuration of a Integration Runtime. |
+| `integrationRuntimes` | _[integrationRuntimes](integrationRuntimes/readme.md)_ array | `[]` |  | An array of objects for the configuration of an Integration Runtime. |
 | `location` | string | `[resourceGroup().location]` |  | Location for all Resources. |
 | `lock` | string | `''` | `['', CanNotDelete, ReadOnly]` | Specify the type of lock. |
 | `managedPrivateEndpoints` | array | `[]` |  | An array of managed private endpoints objects created in the Data Factory managed virtual network. |
@@ -351,6 +351,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 The following module usage examples are retrieved from the content of the files hosted in the module's `.test` folder.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
+
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
 <h3>Example 1: Min</h3>
@@ -412,16 +413,22 @@ module factories './Microsoft.DataFactory/factories/deploy.bicep' = {
     diagnosticStorageAccountId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001'
     diagnosticWorkspaceId: '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001'
     gitConfigureLater: true
-    integrationRuntime: {
-      managedVirtualNetworkName: 'default'
-      name: 'AutoResolveIntegrationRuntime'
-      type: 'Managed'
-      typeProperties: {
-        computeProperties: {
-          location: 'AutoResolve'
+    integrationRuntimes: [
+      {
+        managedVirtualNetworkName: 'default'
+        name: 'AutoResolveIntegrationRuntime'
+        type: 'Managed'
+        typeProperties: {
+          computeProperties: {
+            location: 'AutoResolve'
+          }
         }
       }
-    }
+      {
+        name: 'TestRuntime'
+        type: 'SelfHosted'
+      }
+    ]
     lock: 'CanNotDelete'
     managedPrivateEndpoints: [
       {
@@ -506,17 +513,23 @@ module factories './Microsoft.DataFactory/factories/deploy.bicep' = {
     "gitConfigureLater": {
       "value": true
     },
-    "integrationRuntime": {
-      "value": {
-        "managedVirtualNetworkName": "default",
-        "name": "AutoResolveIntegrationRuntime",
-        "type": "Managed",
-        "typeProperties": {
-          "computeProperties": {
-            "location": "AutoResolve"
+    "integrationRuntimes": {
+      "value": [
+        {
+          "managedVirtualNetworkName": "default",
+          "name": "AutoResolveIntegrationRuntime",
+          "type": "Managed",
+          "typeProperties": {
+            "computeProperties": {
+              "location": "AutoResolve"
+            }
           }
+        },
+        {
+          "name": "TestRuntime",
+          "type": "SelfHosted"
         }
-      }
+      ]
     },
     "lock": {
       "value": "CanNotDelete"
