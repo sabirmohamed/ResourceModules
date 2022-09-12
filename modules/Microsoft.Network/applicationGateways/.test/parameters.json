@@ -366,6 +366,13 @@
                 }
             ]
         },
+        "privateEndpointConfiguration": {
+            "value": [
+                {
+                    "name": "public-PrivateEndpointConnection-01"
+                }
+            ]
+        },
         "diagnosticLogsRetentionInDays": {
             "value": 7
         },

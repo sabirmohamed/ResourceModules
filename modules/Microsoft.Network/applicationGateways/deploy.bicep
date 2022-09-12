@@ -234,7 +234,7 @@ param tags object = {}
 param enableDefaultTelemetry bool = true
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints array = []
+param privateEndpointConnections array = []
 
 var diagnosticsLogs = [for category in diagnosticLogCategoriesToEnable: {
   category: category
@@ -357,6 +357,18 @@ module applicationGateway_roleAssignments '.bicep/nested_roleAssignments.bicep' 
     condition: contains(roleAssignment, 'condition') ? roleAssignment.condition : ''
     delegatedManagedIdentityResourceId: contains(roleAssignment, 'delegatedManagedIdentityResourceId') ? roleAssignment.delegatedManagedIdentityResourceId : ''
     resourceId: applicationGateway.id
+  }
+}]
+
+module applicationGateway_privateEndpointConnections '.bicep/nested_privateEndpointConnections.bicep' = [for (privateEndpointConnection, index) in privateEndpointConnections: {
+  name: '${uniqueString(deployment().name, location)}-AppGateway-PEC-${index}'
+  params: {
+    name: privateEndpointConnection.name
+    description: contains(privateEndpointConnection, 'description') ? privateEndpointConnection.description : ''
+    actionsRequired: contains(privateEndpointConnection, 'actionsRequired') ? privateEndpointConnection.actionsRequired : ''
+    status: contains(privateEndpointConnection, 'status') ? privateEndpointConnection.status : ''
+    resourceId: applicationGateway.id
+    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

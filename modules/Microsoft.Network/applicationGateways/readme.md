@@ -18,6 +18,7 @@ This module deploys Network ApplicationGateways.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/applicationGateways` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/applicationGateways) |
+| `Microsoft.Network/applicationGateways/privateEndpointConnections` | [2021-08-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-08-01/applicationGateways/privateEndpointConnections) |
 
 ## Parameters
 
@@ -57,7 +58,7 @@ This module deploys Network ApplicationGateways.
 | `loadDistributionPolicies` | array | `[]` |  | Load distribution policies of the application gateway resource. |
 | `location` | string | `[resourceGroup().location]` |  | Location for all resources. |
 | `lock` | string | `''` | `['', CanNotDelete, ReadOnly]` | Specify the type of lock. |
-| `privateEndpoints` | array | `[]` |  | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| `privateEndpointConnections` | array | `[]` |  | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | `privateLinkConfigurations` | array | `[]` |  | PrivateLink configurations on application gateway. |
 | `probes` | array | `[]` |  | Probes of the application gateway resource. |
 | `redirectConfigurations` | array | `[]` |  | Redirect configurations of the application gateway resource. |
@@ -505,6 +506,11 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
       }
     ]
     lock: 'CanNotDelete'
+    privateEndpointConfiguration: [
+      {
+        name: 'public-PrivateEndpointConnection-01'
+      }
+    ]
     privateLinkConfigurations: [
       {
         name: 'publicFrontend-PrivateLinkConfiguration'
@@ -893,6 +899,13 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     },
     "lock": {
       "value": "CanNotDelete"
+    },
+    "privateEndpointConfiguration": {
+      "value": [
+        {
+          "name": "public-PrivateEndpointConnection-01"
+        }
+      ]
     },
     "privateLinkConfigurations": {
       "value": [
