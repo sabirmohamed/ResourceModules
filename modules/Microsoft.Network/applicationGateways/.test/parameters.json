@@ -366,7 +366,7 @@
                 }
             ]
         },
-        "privateEndpointConfiguration": {
+        "privateEndpointConnections": {
             "value": [
                 {
                     "name": "public-PrivateEndpointConnection-01"
