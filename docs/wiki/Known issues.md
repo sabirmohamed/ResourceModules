@@ -13,11 +13,13 @@ This section provides an overview of the most impactful limitations and known is
   - [Microsoft.Network/virtualHubs](#microsoftnetworkvirtualhubs)
   - [Microsoft.Network/vpnSites](#microsoftnetworkvpnsites)
   - [Microsoft.Network/connections](#microsoftnetworkconnections)
+  - [Microsoft.Synapse/workspaces](#microsoftsynapseworkspaces)
 - [CI environment specific](#ci-environment-specific)
   - [Static validation](#static-validation)
   - [Deployment validation](#deployment-validation)
     - [Limited module test file set](#limited-module-test-file-set)
   - [Publishing](#publishing)
+  - [Dependencies pipeline](#dependencies-pipeline)
 
 ---
 
@@ -75,6 +77,10 @@ The module has a dependency on a pre-existing Virtual WAN which we don't have de
 
 The module has a dependency on pre-existing Virtual Network Gateways which we don't have deployed using the dependencies pipeline for cost reasons.
 
+## Microsoft.Synapse/workspaces
+
+The change from Bicep version `v0.10.13` to `v0.10.61` introduced a new validation that causes a `scope` statement in the module to fail. This issue is tracked in the Bicep issue [8403](https://github.com/Azure/bicep/issues/8403). A new Bicep version will either resolve the issue, or, the module will be updated accordingly.
+
 ---
 
 # CI environment specific
@@ -98,5 +104,15 @@ The first planned step for each module is to provide a 'minimum-set' module test
 ## Publishing
 
 This section outlines known issues that currently affect the CI environment publishing step.
+
+## Dependencies pipeline
+
+The dependencies pipeline currently fails on the Disk Encryption Set resource creation when deployed more than once.
+
+In the majority of cases you will only need to run the dependencies pipeline just once, as a prerequisite before using the module pipelines. It is then possible you will not experience this problem.
+
+> **Workaround**: In case you need to rerun the dependencies pipeline on top of existing resources created by the first run, please delete the Disk Encription Set resource before the rerun.
+
+Further details are tracked in issue [#1727](https://github.com/Azure/ResourceModules/issues/1727).
 
 ---
