@@ -508,7 +508,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     lock: 'CanNotDelete'
     privateEndpointConnections: [
       {
-        name: 'public-PrivateEndpointConnection-01'
+        name: 'public-PEC-01'
       }
     ]
     privateLinkConfigurations: [
@@ -903,7 +903,7 @@ module applicationGateways './Microsoft.Network/applicationGateways/deploy.bicep
     "privateEndpointConnections": {
       "value": [
         {
-          "name": "public-PrivateEndpointConnection-01"
+          "name": "public-PEC-01"
         }
       ]
     },

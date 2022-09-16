@@ -369,7 +369,7 @@
         "privateEndpointConnections": {
             "value": [
                 {
-                    "name": "public-PrivateEndpointConnection-01"
+                    "name": "public-PEC-01"
                 }
             ]
         },
