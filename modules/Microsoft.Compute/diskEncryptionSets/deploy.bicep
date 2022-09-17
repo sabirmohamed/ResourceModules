@@ -23,6 +23,9 @@ param encryptionType string = 'EncryptionAtRestWithPlatformAndCustomerKeys'
 @description('Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.')
 param rotationToLatestKeyVersionEnabled bool = false
 
+@description('Optional. Enables disk encryption set to use Azure RBAC access to the key vault instead of access policies. Default is false.')
+param usesKeyVaultRbacAuthorization bool = false
+
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments array = []
 
@@ -68,7 +71,19 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2021-04-01' = {
   }
 }
 
-module keyVaultAccessPolicies '../../Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep' = {
+// Key Vault Access using Rbac
+module diskEncryptionSet_KeyVaultRbacAccess './.bicep/nested_keyVaultRbacAccess.bicep' = if (usesKeyVaultRbacAuthorization) {
+  name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVRbacAccess'
+  params: {
+    diskEncryptionSetIdentity: diskEncryptionSet.identity.principalId
+    keyvaultName: last(split(keyVaultResourceId, '/'))
+  }
+  // This is to support access policies to KV in different subscription and resource group than the disk encryption set.
+  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+}
+
+// Key Vault Access using Access Policies
+module keyVaultAccessPolicies '../../Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep' = if (!usesKeyVaultRbacAuthorization) {
   name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVAccessPolicies'
   params: {
     keyVaultName: last(split(keyVaultResourceId, '/'))

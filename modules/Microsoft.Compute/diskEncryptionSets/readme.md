@@ -37,6 +37,7 @@ This template deploys a disk encryption set.
 | `roleAssignments` | array | `[]` |  | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | `rotationToLatestKeyVersionEnabled` | bool | `False` |  | Set this flag to true to enable auto-updating of this disk encryption set to the latest key version. |
 | `tags` | object | `{object}` |  | Tags of the disk encryption resource. |
+| `usesKeyVaultRbacAuthorization` | bool | `False` |  | Enables disk encryption set to use Azure RBAC access to the key vault instead of access policies. Default is false. |
 
 
 ### Parameter Usage: `roleAssignments`
@@ -177,7 +178,7 @@ module diskEncryptionSets './Microsoft.Compute/diskEncryptionSets/deploy.bicep' 
   params: {
     // Required parameters
     keyName: 'keyEncryptionKey'
-    keyVaultResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-<<namePrefix>>-az-kv-x-001'
+    keyVaultResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/ahmad-rg/providers/Microsoft.KeyVault/vaults/<<namePrefix>>-test-kv'
     name: '<<namePrefix>>-az-des-x-001'
     // Non-required parameters
     roleAssignments: [
@@ -188,6 +189,7 @@ module diskEncryptionSets './Microsoft.Compute/diskEncryptionSets/deploy.bicep' 
         roleDefinitionIdOrName: 'Reader'
       }
     ]
+    usesKeyVaultRbacAuthorization: true
   }
 }
 ```
@@ -209,7 +211,7 @@ module diskEncryptionSets './Microsoft.Compute/diskEncryptionSets/deploy.bicep' 
       "value": "keyEncryptionKey"
     },
     "keyVaultResourceId": {
-      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-<<namePrefix>>-az-kv-x-001"
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/ahmad-rg/providers/Microsoft.KeyVault/vaults/<<namePrefix>>-test-kv"
     },
     "name": {
       "value": "<<namePrefix>>-az-des-x-001"
@@ -224,6 +226,9 @@ module diskEncryptionSets './Microsoft.Compute/diskEncryptionSets/deploy.bicep' 
           "roleDefinitionIdOrName": "Reader"
         }
       ]
+    },
+    "usesKeyVaultRbacAuthorization": {
+      "value": true
     }
   }
 }
