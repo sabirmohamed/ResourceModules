@@ -36,10 +36,7 @@ function Get-ParametersFromRoot {
         [string] $JSONKeyPath,
 
         [Parameter(Mandatory = $true)]
-        [string] $ResourceType,
-
-        [Parameter(Mandatory = $false)]
-        [int] $Level = 1
+        [string] $ResourceType
     )
 
     $definitions = $specificationData.definitions
@@ -139,32 +136,117 @@ function Get-ParametersFromRoot {
     foreach ($innerParameter in ($innerParameters.Keys | Where-Object { -not $innerParameters[$_].readOnly })) {
         $param = $innerParameters[$innerParameter]
 
-        if ($param.Keys -contains '$ref') {
-            switch (($param.'$ref' -split '\/')[1]) {
-                'definitions' {
-                    $recursiveInputObject = @{
-                        SpecificationData = $SpecificationData
-                        RelevantParamRoot = $definitions
-                        JSONKeyPath       = $JSONKeyPath
-                        ResourceType      = $ResourceType
-                    }
-                    $templateData += Get-ParametersFromRoot @recursiveInputObject
-                }
-            }
-        } else {
-            $parameterObject = @{
-                level       = $Level
-                name        = $innerParameter
-                type        = $param.keys -contains 'type' ? $param.type : 'object'
-                description = $param.description
-                required    = $innerParameters.required -contains $innerParameter
-            }
-
-            $parameterObject = Set-OptionalParameter -SourceParameterObject $param -TargetObject $parameterObject
-
-            $templateData += $parameterObject
+        $innerParamInputObject = @{
+            TemplateData              = $templateData
+            Parameter                 = $param
+            SpecificationData         = $SpecificationData
+            Level                     = 1
+            Name                      = $innerParameter
+            Parent                    = ''
+            RequiredParametersOnLevel = $innerParameters.required
         }
+        $templateData = Get-InnerParameter @innerParamInputObject
     }
 
     return $templateData
+}
+
+function Get-InnerParameter {
+
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [hashtable] $SpecificationData,
+
+        [Parameter()]
+        [array] $RequiredParametersOnLevel,
+
+        [Parameter()]
+        [array] $TemplateData,
+
+        [Parameter()]
+        [hashtable] $Parameter,
+
+        [Parameter()]
+        [string] $Name,
+
+        [Parameter()]
+        [string] $Parent,
+
+        [Parameter(Mandatory)]
+        [int] $Level
+    )
+
+    $specDefinitions = $specificationData.definitions
+    $specParameters = $specificationData.parameters
+
+    if ($Parameter.Keys -contains 'properties') {
+        # Dealing with a sub-object - requires us to iterate
+        foreach ($property in $Parameter['properties'].Keys) {
+            $recursiveInputObject = @{
+                TemplateData      = $TemplateData
+                SpecificationData = $SpecificationData
+                Parameter         = $Parameter['properties'][$property]
+                Level             = $Level + 1
+                Parent            = $Parent
+                Name              = $property
+            }
+            $templateData += Get-InnerParameter @recursiveInputObject
+        }
+        return $TemplateData
+    }
+
+    if ($Parameter.Keys -contains '$ref') {
+
+        # Dealing with an object
+        $templateData += @{
+            level       = $Level
+            name        = $Name
+            type        = $Parameter.keys -contains 'type' ? $Parameter.type : 'object'
+            description = $Parameter.description
+            required    = $RequiredParametersOnLevel -contains $Name
+            Parent      = $Parent
+        }
+
+        switch (($Parameter.'$ref' -split '\/')[1]) {
+            'definitions' {
+                $recursiveInputObject = @{
+                    TemplateData      = $TemplateData
+                    SpecificationData = $SpecificationData
+                    Parameter         = $specDefinitions[(Split-Path $Parameter.'$ref' -Leaf)]
+                    Level             = $Level + 1
+                    Parent            = Split-Path $Parameter.'$ref' -Leaf
+                    Name              = Split-Path $Parameter.'$ref' -Leaf
+                }
+                $templateData += Get-InnerParameter @recursiveInputObject
+            }
+            'parameters' {
+                $recursiveInputObject = @{
+                    TemplateData      = $TemplateData
+                    SpecificationData = $SpecificationData
+                    Parameter         = $specParameters[(Split-Path $Parameter.'$ref' -Leaf)]
+                    Level             = $Level + 1
+                    Parent            = Split-Path $Parameter.'$ref' -Leaf
+                    Name              = Split-Path $Parameter.'$ref' -Leaf
+
+                }
+                $templateData += Get-InnerParameter @recursiveInputObject
+            }
+        }
+    } else {
+        $parameterObject = @{
+            level       = $Level
+            name        = $Name
+            type        = $Parameter.keys -contains 'type' ? $Parameter.type : 'object'
+            description = $Parameter.description
+            required    = $RequiredParametersOnLevel -contains $Name
+            Parent      = $Parent
+        }
+
+        $parameterObject = Set-OptionalParameter -SourceParameterObject $Parameter -TargetObject $parameterObject
+
+        $templateData += $parameterObject
+    }
+
+    return $TemplateData
 }
