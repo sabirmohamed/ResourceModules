@@ -7,6 +7,9 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param aksClusterDnsPrefix string = name
 
+@description('Optional. Existing Private DNS Zone Resource ID. If not provided, default is none.')
+param privateDNSZoneResourceId string = 'none'
+
 @description('Optional. Enables system assigned managed identity on the resource.')
 param systemAssignedIdentity bool = false
 
@@ -150,75 +153,6 @@ param enableKeyvaultSecretsProvider bool = false
 #disable-next-line secure-secrets-in-params // Not a secret
 param enableSecretRotation string = 'false'
 
-@description('Optional. Specifies the scan interval of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScanInterval string = '10s'
-
-@description('Optional. Specifies the scale down delay after add of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterAdd string = '10m'
-
-@description('Optional. Specifies the scale down delay after delete of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterDelete string = '20s'
-
-@description('Optional. Specifies scale down delay after failure of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterFailure string = '3m'
-
-@description('Optional. Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownUnneededTime string = '10m'
-
-@description('Optional. Specifies the scale down unready time of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownUnreadyTime string = '20m'
-
-@description('Optional. Specifies the utilization threshold of the auto-scaler of the AKS cluster.')
-param autoScalerProfileUtilizationThreshold string = '0.5'
-
-@description('Optional. Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxGracefulTerminationSec string = '600'
-
-@allowed([
-  'false'
-  'true'
-])
-@description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
-param autoScalerProfileBalanceSimilarNodeGroups string = 'false'
-
-@allowed([
-  'least-waste'
-  'most-pods'
-  'priority'
-  'random'
-])
-@description('Optional. Specifies the expand strategy for the auto-scaler of the AKS cluster.')
-param autoScalerProfileExpander string = 'random'
-
-@description('Optional. Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxEmptyBulkDelete string = '10'
-
-@description('Optional. Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.')
-param autoScalerProfileMaxNodeProvisionTime string = '15m'
-
-@description('Optional. Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.')
-param autoScalerProfileMaxTotalUnreadyPercentage string = '45'
-
-@description('Optional. For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).')
-param autoScalerProfileNewPodScaleUpDelay string = '0s'
-
-@description('Optional. Specifies the OK total unready count for the auto-scaler of the AKS cluster.')
-param autoScalerProfileOkTotalUnreadyCount string = '3'
-
-@allowed([
-  'false'
-  'true'
-])
-@description('Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithLocalStorage string = 'true'
-
-@allowed([
-  'false'
-  'true'
-])
-@description('Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithSystemPods string = 'true'
-
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
 
@@ -347,31 +281,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' 
       adminGroupObjectIDs: aadProfileAdminGroupObjectIDs
       tenantID: aadProfileTenantId
     }
-    autoScalerProfile: {
-      'balance-similar-node-groups': autoScalerProfileBalanceSimilarNodeGroups
-      'expander': autoScalerProfileExpander
-      'max-empty-bulk-delete': autoScalerProfileMaxEmptyBulkDelete
-      'max-graceful-termination-sec': autoScalerProfileMaxGracefulTerminationSec
-      'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
-      'max-total-unready-percentage': autoScalerProfileMaxTotalUnreadyPercentage
-      'new-pod-scale-up-delay': autoScalerProfileNewPodScaleUpDelay
-      'ok-total-unready-count': autoScalerProfileOkTotalUnreadyCount
-      'scale-down-delay-after-add': autoScalerProfileScaleDownDelayAfterAdd
-      'scale-down-delay-after-delete': autoScalerProfileScaleDownDelayAfterDelete
-      'scale-down-delay-after-failure': autoScalerProfileScaleDownDelayAfterFailure
-      'scale-down-unneeded-time': autoScalerProfileScaleDownUnneededTime
-      'scale-down-unready-time': autoScalerProfileScaleDownUnreadyTime
-      'scale-down-utilization-threshold': autoScalerProfileUtilizationThreshold
-      'scan-interval': autoScalerProfileScanInterval
-      'skip-nodes-with-local-storage': autoScalerProfileSkipNodesWithLocalStorage
-      'skip-nodes-with-system-pods': autoScalerProfileSkipNodesWithSystemPods
-    }
     apiServerAccessProfile: {
       authorizedIPRanges: authorizedIPRanges
       disableRunCommand: disableRunCommand
       enablePrivateCluster: true
-      enablePrivateClusterPublicFQDN: false
-      privateDNSZone: 'none'
+      enablePrivateClusterPublicFQDN: true
+      privateDNSZone: privateDNSZoneResourceId
     }
     podIdentityProfile: {
       allowNetworkPluginKubenet: podIdentityProfileAllowNetworkPluginKubenet
