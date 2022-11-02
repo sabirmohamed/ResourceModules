@@ -10,8 +10,11 @@ param clusterUserAssignedIdentityResourceId string
 @description('Required. The user assigned identity to use for the kubelet.')
 param kubeletUserAssignedIdentityResourceId string
 
-@description('Optional. Existing Private DNS Zone Resource ID. If not provided, default is none.')
-param privateDNSZoneResourceId string = 'none'
+@description('Required. Existing Private DNS Zone Resource ID.')
+param privateDNSZoneResourceId string
+
+@description('Optional. Whether to create additional public FQDN for private cluster or not.')
+param enablePrivateClusterPublicFQDN bool = true
 
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param aksClusterDnsPrefix string = name
@@ -284,7 +287,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' 
       authorizedIPRanges: authorizedIPRanges
       disableRunCommand: disableRunCommand
       enablePrivateCluster: true
-      enablePrivateClusterPublicFQDN: false
+      enablePrivateClusterPublicFQDN: enablePrivateClusterPublicFQDN
       privateDNSZone: privateDNSZoneResourceId
     }
     podIdentityProfile: {
