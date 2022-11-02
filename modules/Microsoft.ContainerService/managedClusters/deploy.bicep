@@ -4,17 +4,17 @@ param name string
 @description('Optional. Specifies the location of AKS cluster. It picks up Resource Group\'s location by default.')
 param location string = resourceGroup().location
 
-@description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
-param aksClusterDnsPrefix string = name
+@description('Required. The user identity to assign to the cluster.')
+param clusterUserAssignedIdentityResourceId string
+
+@description('Required. The user assigned identity to use for the kubelet.')
+param kubeletUserAssignedIdentityResourceId string
 
 @description('Optional. Existing Private DNS Zone Resource ID. If not provided, default is none.')
 param privateDNSZoneResourceId string = 'none'
 
-@description('Optional. Enables system assigned managed identity on the resource.')
-param systemAssignedIdentity bool = false
-
-@description('Optional. The ID(s) to assign to the resource.')
-param userAssignedIdentities object = {}
+@description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
+param aksClusterDnsPrefix string = name
 
 @description('Optional. Specifies the network plugin used for building Kubernetes network. - azure or kubenet.')
 @allowed([
@@ -22,7 +22,7 @@ param userAssignedIdentities object = {}
   'azure'
   'kubenet'
 ])
-param aksClusterNetworkPlugin string = ''
+param aksClusterNetworkPlugin string = 'azure'
 
 @description('Optional. Specifies the network policy used for building Kubernetes network. - calico or azure.')
 @allowed([
@@ -30,7 +30,7 @@ param aksClusterNetworkPlugin string = ''
   'azure'
   'calico'
 ])
-param aksClusterNetworkPolicy string = ''
+param aksClusterNetworkPolicy string = 'azure'
 
 @description('Optional. Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used.')
 param aksClusterPodCidr string = ''
@@ -66,10 +66,10 @@ param aksClusterOutboundType string = 'loadBalancer'
   'Free'
   'Paid'
 ])
-param aksClusterSkuTier string = 'Free'
+param aksClusterSkuTier string = 'Paid'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
-param aksClusterKubernetesVersion string = ''
+param aksClusterKubernetesVersion string = '1.23.8'
 
 @description('Optional. Specifies the administrator username of Linux virtual machines.')
 param aksClusterAdminUsername string = 'azureuser'
@@ -143,7 +143,7 @@ param azurePolicyVersion string = 'v2'
 
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param enableKeyvaultSecretsProvider bool = false
+param enableKeyvaultSecretsProvider bool = true
 
 @allowed([
   'false'
@@ -151,7 +151,7 @@ param enableKeyvaultSecretsProvider bool = false
 ])
 @description('Optional. Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param enableSecretRotation string = 'false'
+param enableSecretRotation string = 'true'
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
@@ -162,14 +162,11 @@ param podIdentityProfileEnable bool = false
 @description('Optional. The pod identities to use in the cluster.')
 param podIdentityProfileUserAssignedIdentities array = []
 
-@description('Optional. The user assigned identity to use for the kubelet.')
-param kubeletUserAssignedIdentityResourceId string = ''
-
 @description('Optional. The pod identity exceptions to allow.')
 param podIdentityProfileUserAssignedIdentityExceptions array = []
 
 @description('Optional. Whether to enable Azure Defender.')
-param enableAzureDefender bool = false
+param enableAzureDefender bool = true
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
@@ -180,11 +177,13 @@ param monitoringWorkspaceId string = ''
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-var identityType = systemAssignedIdentity ? 'SystemAssigned' : (!empty(userAssignedIdentities) ? 'UserAssigned' : 'None')
+var identityType = !empty(clusterUserAssignedIdentityResourceId) ? 'UserAssigned' : 'SystemAssigned'
 
 var identity = {
   type: identityType
-  userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
+  userAssignedIdentities: !empty(clusterUserAssignedIdentityResourceId) ? {
+    '${clusterUserAssignedIdentityResourceId}': {}
+  } : null
 }
 
 var aksClusterLinuxProfile = {
@@ -285,7 +284,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' 
       authorizedIPRanges: authorizedIPRanges
       disableRunCommand: disableRunCommand
       enablePrivateCluster: true
-      enablePrivateClusterPublicFQDN: true
+      enablePrivateClusterPublicFQDN: false
       privateDNSZone: privateDNSZoneResourceId
     }
     podIdentityProfile: {
@@ -356,9 +355,6 @@ output name string = managedCluster.name
 
 @description('The control plane FQDN of the managed cluster.')
 output controlPlaneFQDN string = managedCluster.properties.privateFQDN
-
-@description('The principal ID of the system assigned identity.')
-output systemAssignedPrincipalId string = systemAssignedIdentity && contains(managedCluster.identity, 'principalId') ? managedCluster.identity.principalId : ''
 
 @description('The Object ID of the AKS identity.')
 output kubeletidentityObjectId string = contains(managedCluster.properties, 'identityProfile') ? contains(managedCluster.properties.identityProfile, 'kubeletidentity') ? managedCluster.properties.identityProfile.kubeletidentity.objectId : '' : ''
