@@ -176,10 +176,10 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
 
 var identityType = systemAssignedIdentity ? (!empty(userAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(userAssignedIdentities) ? 'UserAssigned' : 'None')
 
-var identity = identityType != 'None' ? {
+var identity = {
   type: identityType
   userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
-} : null
+}
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
@@ -468,3 +468,6 @@ output systemAssignedPrincipalId string = systemAssignedIdentity && contains(api
 
 @description('The location the resource was deployed into.')
 output location string = apiManagementService.location
+
+@description('The Private IP of the API Management Service if deployed into a virtual network.')
+output apiManagementServicePrivateIPaddresses array = virtualNetworkType == 'Internal' ? apiManagementService.properties.privateIPAddresses : []
