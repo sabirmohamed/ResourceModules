@@ -185,6 +185,7 @@ module images './Microsoft.Compute/images/deploy.bicep' = {
     osDiskCaching: 'ReadWrite'
     osType: 'Windows'
     // Non-required parameters
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     hyperVGeneration: 'V1'
     roleAssignments: [
       {
@@ -228,6 +229,9 @@ module images './Microsoft.Compute/images/deploy.bicep' = {
       "value": "Windows"
     },
     // Non-required parameters
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
+    },
     "hyperVGeneration": {
       "value": "V1"
     },

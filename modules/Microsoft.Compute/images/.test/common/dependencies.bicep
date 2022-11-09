@@ -10,6 +10,12 @@ param storageAccountName string
 @description('Required. The name prefix of the Image Template to create.')
 param imageTemplateNamePrefix string
 
+@description('Required. The name prefix of the Disk Encryption Set to create.')
+param diskEncryptionSetName string
+
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 @description('Generated. Do not provide a value! This date value is used to generate a unique image template name.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
 
@@ -139,6 +145,59 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
   dependsOn: [ triggerImageDeploymentScript ]
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enablePurgeProtection: null
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    enabledForDeployment: true
+    enableRbacAuthorization: true
+    accessPolicies: []
+  }
+
+  resource key 'keys@2022-07-01' = {
+    name: 'keyEncryptionKey'
+    properties: {
+      kty: 'RSA'
+    }
+  }
+}
+
+resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Reader-RoleAssignment.')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424') // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
+  name: diskEncryptionSetName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    activeKey: {
+      sourceVault: {
+        id: keyVault.id
+      }
+      keyUrl: keyVault::key.properties.keyUriWithVersion
+    }
+    encryptionType: 'EncryptionAtRestWithPlatformAndCustomerKeys'
+    rotationToLatestKeyVersionEnabled: false
+  }
+}
+
 @description('The URI of the created VHD.')
 output vhdUri string = 'https://${storageAccount.name}.blob.core.windows.net/vhds/${imageTemplateNamePrefix}.vhd'
 
@@ -147,3 +206,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The resource ID of the created Disk Encryption Set.')
+output diskEncryptionSetResourceId string = diskEncryptionSet.id

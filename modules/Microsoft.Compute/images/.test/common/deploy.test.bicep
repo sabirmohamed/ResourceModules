@@ -34,6 +34,8 @@ module resourceGroupResources 'dependencies.bicep' = {
     imageTemplateNamePrefix: 'dep-<<namePrefix>>-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-<<namePrefix>>-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-<<namePrefix>>-ds-${serviceShort}-copyVhdToStorage'
+    keyVaultName: 'dep-<<namePrefix>>-kv-${serviceShort}'
+    diskEncryptionSetName: 'dep-<<namePrefix>>-des-${serviceShort}'
   }
 }
 
@@ -59,5 +61,6 @@ module testDeployment '../../deploy.bicep' = {
       }
     ]
     zoneResilient: true
+    diskEncryptionSetResourceId: resourceGroupResources.outputs.diskEncryptionSetResourceId
   }
 }
