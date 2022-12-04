@@ -434,6 +434,14 @@ function Get-ModulesToPublish {
                     Version          = ($ParentModuleVersion.Split('.')[0])
                     TemplateFilePath = $ParentTemplateFileToPublish.FullName
                 }
+
+                if ($PublishLatest) {
+                    # Absolute latest
+                    $ModulesToPublish += @{
+                        Version          = 'latest'
+                        TemplateFilePath = $ParentTemplateFileToPublish.FullName
+                    }
+                }
             }
         }
     }
