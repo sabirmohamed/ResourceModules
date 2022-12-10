@@ -7,12 +7,9 @@
                 "$PSRule"
             ],
             "label": "PSRule: Run analysis",
-            "modules": [
-                "PSRule.Rules.Azure"
-            ],
             "presentation": {
-                "clear": true,
-                "panel": "dedicated"
+                "panel": "dedicated",
+                "clear": true
             }
         }
     ]
