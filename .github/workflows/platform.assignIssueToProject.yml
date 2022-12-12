@@ -30,3 +30,19 @@ jobs:
         with:
           project: https://github.com/orgs/Azure/projects/363
           column_name: 'Needs triage'
+  link_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: 'link issue'
+        shell: pwsh
+        run: |
+          gh api graphql -f query='
+            query($organization: String! $number: Int!){
+              organization(login: $organization){
+                projectV2(number: $number) {
+                  id
+                }
+              }
+            }' -f organization="Azure" -F number=363
